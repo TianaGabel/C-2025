@@ -35,7 +35,8 @@ int Image::ReadImage(char* file_name, char* checksum_name){
 
     int row_count = 0;
     std::vector<int> image_rows;
-    while(!image_filestream.eof()){
+    bool eof = false;
+    while(!image_filestream.eof() && (row_count < num_rows)){
         int col_count = 0;
         int row_total = 0;
         while(col_count < num_cols*3){
@@ -53,6 +54,7 @@ int Image::ReadImage(char* file_name, char* checksum_name){
             row_total += val;
             col_count++;
         }
+        if(eof){break;}
         std::cout << std::endl;
         row_count++;
         image_rows.push_back(row_total);
@@ -70,7 +72,7 @@ int Image::ReadImage(char* file_name, char* checksum_name){
     }
 
     int current_row = 0;
-    while(!checksum_filestream.eof()){
+    while(!checksum_filestream.eof()&& (current_row < num_rows)){
         int checksum;
         checksum_filestream >> checksum;
         std::cout << checksum <<std::endl;
