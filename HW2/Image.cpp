@@ -59,9 +59,13 @@ int Image::ReadImage(char* file_name, char* checksum_name){
         row_count++;
         image_rows.push_back(row_total);
     }
-    if (row_count != num_rows){
-        std::cerr << "Incorrect number of rows found" << std::endl;
-        return -1;
+    if(!image_filestream.eof()){
+        std::string extra;
+        getline(image_filestream, extra);
+        if(!extra.empty()){
+            std::cerr <<"bad row count "<<file_name<<std::endl;
+            return -1;
+        }
     }
 
     //Read from checksum file
@@ -87,6 +91,16 @@ int Image::ReadImage(char* file_name, char* checksum_name){
         }
         current_row++;
     }
+    if(!checksum_filestream.eof()){
+        std::string extra;
+        getline(checksum_filestream, extra);
+        if(!extra.empty()){
+            std::cerr <<"Checksum and Image file rowcounts do not match" << file_name << std::endl;
+            std::vector<std::vector<int>> empty;
+            return -1;
+        }
+    }
+            
     if(current_row != int(image_rows.size())){
         std::cerr << "Checksum and Image file rowcounts do not match" << std::endl;
         return -1;
