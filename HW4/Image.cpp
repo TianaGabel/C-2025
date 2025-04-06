@@ -19,16 +19,15 @@ int Image::OutputImage(char* out_file_name){
     // int num_cols;
     // int max_pixel_val;
     //First bit
-    imageFS << "p3" << std::endl;
-    imageFS << num_cols << num_rows << max_pixel_val;
+    imageFS << "P3" << std::endl;
+    imageFS << num_cols << " " << num_rows << " " << max_pixel_val;
     imageFS << std::endl;
 
     // migth as well do rows for ease of verifying
     // double check this
     for(int i = 0; i <num_rows; i++){
-        int row_total = 0;
         for (int j = 0; j < num_cols*3; j++){
-            imageFS << image[i][j];
+            imageFS << image[i][j] << " ";
         }
         imageFS <<std::endl;
     }
@@ -37,7 +36,7 @@ int Image::OutputImage(char* out_file_name){
     return 0;
 }
 
-int NormalizeImage(){
+int Image::NormalizeImage(){
 
     int max = image[0][0];
     int min = image[0][0];
@@ -48,13 +47,21 @@ int NormalizeImage(){
             if(image[i][j] < min) min = image[i][j];
         }
     }
+    //std::cout << "BOO" << max << "+" << min << std::endl;
 
+    if (min == max){
+        //no edits need to be made
+        return 0;
+    }
     //Update image values
-
+    int temp;
     for(int i = 0; i <num_rows; i++){
         for (int j = 0; j < num_cols*3; j++){
-            image[i][j] = std::round((image[i][j]- min) * (255/(max-min)));
+            temp =  std::round((image[i][j]- min) * (255.0/(max-min)));
+            std::cout << temp << " ";
+            image[i][j] = temp;
         }
+        std::cout << std::endl;
     }
     
     return 0;
@@ -68,8 +75,8 @@ int Image::OutputCheckSums(char* file_name, char* row_wise, char* column_wise){
         return -1;
     }
 
-    int num_rows = image.size();
-    int num_cols = image.at(0).size() / 3;
+    num_rows = image.size();
+    num_cols = image.at(0).size() / 3;
     // std::cout << "rows" << num_rows <<std::endl;
     // std::cout << "cols" << num_cols <<std::endl;
 
@@ -125,9 +132,6 @@ int Image::ReadImage(char* file_name){
     }
     char p;
     char three;
-    int num_rows;
-    int num_cols;
-    int max_pixel_val;
 
     image_filestream >> p;
     image_filestream >> three;
@@ -144,7 +148,6 @@ int Image::ReadImage(char* file_name){
     }
 
     int row_count = 0;
-    std::vector<std::vector<int>> image;
     while(!image_filestream.eof() && (row_count < num_rows)){
         int col_count = 0;
         int row_total = 0;
@@ -180,5 +183,5 @@ int Image::ReadImage(char* file_name){
     }
 
     image_filestream.close();
-    SetImage(image);
+    return 0;
 }
