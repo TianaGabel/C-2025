@@ -9,8 +9,11 @@
 
 PBMImage::PBMImage(){}
 
-PBMImage::PBMImage(std::vector<std::vector<int>> image){
-    this->image = image;
+PBMImage::PBMImage(std::vector<std::vector<int>> im){
+    this->num_cols = im.at(0).size();
+    this->num_rows = im.size();
+    this->max_pixel_val = 1;
+    this->image = im;
 }
 
 int PBMImage::ReadImage(char* file_name){
@@ -41,12 +44,12 @@ int PBMImage::ReadImage(char* file_name){
         while(col_count < num_cols){
             int val;
             image_filestream >> val;
-            //std::cout << val << " [" << col_count << "] ";
+            std::cout << val << " [" << col_count << "] ";
             if (image_filestream.fail()){
                 std::cerr << "Could not read value in " << std::endl;
                 return -1;
             }
-            if ((val == 0)||(val == 1)){
+            if (!(val == 0)&&!(val == 1)){
                 std::cerr << "Incorrect pixel value" << std::endl;
                 return -1;
             }
@@ -58,14 +61,14 @@ int PBMImage::ReadImage(char* file_name){
         row_count++;
     }
 
-    if(!image_filestream.eof()){
-        std::string extra;
-        getline(image_filestream, extra);
-        if(!extra.empty()){
-            std::cerr <<"bad row count "<<file_name<<std::endl;
-            return -1;
-        }
-    }
+    // if(!image_filestream.eof()){
+    //     std::string extra;
+    //     getline(image_filestream, extra);
+    //     if(!extra.empty()){
+    //         std::cerr <<"bad row count "<<file_name<<std::endl;
+    //         return -1;
+    //     }
+    // }
 
     image_filestream.close();
     return 0;
@@ -81,7 +84,7 @@ int PBMImage::OutputImage(char* out_file_name){
     }
 
     //First bit
-    imageFS << "P1" << std::endl;
+    imageFS << "p1" << std::endl;
     imageFS << num_cols << " " << num_rows << " " << max_pixel_val;
     imageFS << std::endl;
 
@@ -100,7 +103,7 @@ int PBMImage::NormalizeImage(){
     return 0;
 }
 
-PPMImage PBMImage::ConvertToPPM(){
+std::vector<std::vector<int>> PBMImage::ConvertToPPM(){
     //B to C  RGB all = 255*bit
     std::vector<std::vector<int>> temp_image;
     int temp;
@@ -116,10 +119,10 @@ PPMImage PBMImage::ConvertToPPM(){
         temp_image.push_back(row);
     }
 
-    return PPMImage(temp_image);
+    return temp_image;
 }
 
-PGMImage PBMImage::ConvertToPGM(){
+std::vector<std::vector<int>> PBMImage::ConvertToPGM(){
     //B to G  I = 255*bit
     std::vector<std::vector<int>> temp_image;
     int temp;
@@ -133,9 +136,9 @@ PGMImage PBMImage::ConvertToPGM(){
         temp_image.push_back(row);
     }
 
-    return PGMImage(temp_image);
+    return temp_image;
 }
 
-PBMImage PBMImage::ConvertToPBM(){
-    return *this;
+std::vector<std::vector<int>> PBMImage::ConvertToPBM(){
+    return this->image;
 }

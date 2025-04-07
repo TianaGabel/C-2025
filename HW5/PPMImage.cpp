@@ -8,8 +8,11 @@
 
 PPMImage::PPMImage(){}
 
-PPMImage::PPMImage(std::vector<std::vector<int>> image){
-    this->image = image;
+PPMImage::PPMImage(std::vector<std::vector<int>> im){
+    this->num_cols = im.at(0).size() / 3.0;
+    this->num_rows = im.size();
+    this->max_pixel_val = 255;
+    this->image = im;
 }
 
 int PPMImage::ReadImage(char* file_name){
@@ -118,20 +121,20 @@ int PPMImage::NormalizeImage(){
     for(int i = 0; i <num_rows; i++){
         for (int j = 0; j < num_cols*3; j++){
             temp =  std::round((image[i][j]- min) * (255.0/(max-min)));
-            std::cout << temp << " ";
+            //std::cout << temp << " ";
             image[i][j] = temp;
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
     }
     
     return 0;
 }
 
-PPMImage PPMImage::ConvertToPPM(){
-    return *this;
+std::vector<std::vector<int>> PPMImage::ConvertToPPM(){
+    return this->image;
 }
 
-PGMImage PPMImage::ConvertToPGM(){
+std::vector<std::vector<int>> PPMImage::ConvertToPGM(){
     //C to G I = round((R+G+B)/3)
     std::vector<std::vector<int>> temp_image;
 
@@ -149,10 +152,10 @@ PGMImage PPMImage::ConvertToPGM(){
         temp_image.push_back(row);
     }
 
-    return PGMImage(temp_image);
+    return temp_image;
 }
 
-PBMImage PPMImage::ConvertToPBM(){
+std::vector<std::vector<int>> PPMImage::ConvertToPBM(){
     //C to B 1 if (R+G+B) > 382.5
     std::vector<std::vector<int>> temp_image;
     int threshold = 382.5;
@@ -164,13 +167,13 @@ PBMImage PPMImage::ConvertToPBM(){
         std::vector<int> row;
         for (int j = 0; j < num_cols; j++){
             start = j * 3;
-            int num = std::round((image[i][start]+ image[i][start + 1] + image[i][start + 2])/3.0);
+            int num = std::round((image[i][start]+ image[i][start + 1] + image[i][start + 2]));
             temp = (num > threshold) ? 1: 0;
             row.push_back(temp);
         }
         temp_image.push_back(row);
     }
 
-    return PBMImage(temp_image);
+    return temp_image;
 
 }

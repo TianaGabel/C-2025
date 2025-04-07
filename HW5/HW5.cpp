@@ -1,5 +1,5 @@
 #include<iostream>
-#include "Image.h"
+#include "ImageManager.h"
 
 int main(int argc,char* argv[]){
 
@@ -9,7 +9,7 @@ int main(int argc,char* argv[]){
         return -1;
     }
 
-    Image image;
+    ImageManager image;
 
     int return_code = image.ReadImage(argv[1]);
     if (return_code != 0) return return_code;

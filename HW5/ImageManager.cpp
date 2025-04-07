@@ -10,20 +10,19 @@
 
 int ImageManager::OutputImage(char* out_file_name){
 
-    //TODO does case matter
     std::string ext(out_file_name);
 
     ext = ext.substr(3);
 
-    if (ext == "ppm")     image = image.ConvertToPPM();
-    else if(ext == "pgm") image = image.ConvertToPGM();
-    else if(ext == "pbm") image = image.ConvertToPBM();
+    if (ext == ".ppm")     image = new PPMImage(image->ConvertToPPM());
+    else if(ext == ".pgm") image = new PGMImage(image->ConvertToPGM());
+    else if(ext == ".pbm") image = new PBMImage(image->ConvertToPBM());
     else {
-        //TODO Error message about invalid file extension
+        std::cerr <<"invalid "<< ext << " "<<out_file_name<<std::endl;
         return -1;
     }
 
-    return image.OutputImage(out_file_name);
+    return image->OutputImage(out_file_name);
 }
 
 int ImageManager::ReadImage(char* file_name){
@@ -40,17 +39,17 @@ int ImageManager::ReadImage(char* file_name){
     
     image_filestream.close();
 
-    if (num == '3')     image = PPMImage();
-    else if(num == '2') image = PGMImage();
-    else if(num == '1') image = PBMImage();
+    if (num == '3')     image = new PPMImage();
+    else if(num == '2') image = new PGMImage();
+    else if(num == '1') image = new PBMImage();
     else {
-        //TODO Error message about invalid file extension
+        std::cerr <<"Bad file extension"<<file_name<<std::endl;
         return -1;
     }
 
-    return image.ReadImage(file_name);
+    return image->ReadImage(file_name);
 }
 
 int ImageManager::NormalizeImage(){
-    return image.NormalizeImage();
+    return image->NormalizeImage();
 }

@@ -9,6 +9,9 @@
 PGMImage::PGMImage(){}
 
 PGMImage::PGMImage(std::vector<std::vector<int>> im){
+    this->num_cols = im.at(0).size();
+    this->num_rows = im.size();
+    this->max_pixel_val = 255;
     this->image = im;
 }
 
@@ -58,14 +61,14 @@ int PGMImage::ReadImage(char* file_name){
         row_count++;
     }
 
-    if(!image_filestream.eof()){
-        std::string extra;
-        getline(image_filestream, extra);
-        if(!extra.empty()){
-            std::cerr <<"bad row count "<<file_name<<std::endl;
-            return -1;
-        }
-    }
+    // if(!image_filestream.eof()){
+    //     std::string extra;
+    //     getline(image_filestream, extra);
+    //     if(!extra.empty()){
+    //         std::cerr <<"bad row count "<<file_name<<std::endl;
+    //         return -1;
+    //     }
+    // }
 
     image_filestream.close();
     return 0;
@@ -127,7 +130,7 @@ int PGMImage::NormalizeImage(){
     return 0;
 }
 
-PPMImage PGMImage::ConvertToPPM(){
+std::vector<std::vector<int>> PGMImage::ConvertToPPM(){
     //G to C R,G,B all = I
     std::vector<std::vector<int>> temp_image;
     int temp;
@@ -143,14 +146,14 @@ PPMImage PGMImage::ConvertToPPM(){
         temp_image.push_back(row);
     }
 
-    return PPMImage(temp_image);
+    return temp_image;
 }
 
-PGMImage PGMImage::ConvertToPGM(){
-    return *this;
+std::vector<std::vector<int>> PGMImage::ConvertToPGM(){
+    return this->image;
 }
 
-PBMImage PGMImage::ConvertToPBM(){
+std::vector<std::vector<int>> PGMImage::ConvertToPBM(){
     //G to B 1 if I > 127.5
     std::vector<std::vector<int>> temp_image;
     int threshold = 127.5;
@@ -166,5 +169,5 @@ PBMImage PGMImage::ConvertToPBM(){
         temp_image.push_back(row);
     }
 
-    
+    return temp_image;
 }

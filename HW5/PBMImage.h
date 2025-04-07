@@ -5,6 +5,9 @@
 #include "PGMImage.h"
 #include "AbstractImage.h"
 
+class PPMImage;
+class PGMImage;
+
 class PBMImage : public AbstractImage{
     private:
         std::vector<std::vector<int>> image;
@@ -18,9 +21,9 @@ class PBMImage : public AbstractImage{
         int ReadImage(char* file_name);
         int NormalizeImage();
         int OutputImage(char* out_file_name);
-        PPMImage ConvertToPPM();
-        PGMImage ConvertToPGM();
-        PBMImage ConvertToPBM();
+        std::vector<std::vector<int>> ConvertToPPM();
+        std::vector<std::vector<int>> ConvertToPGM();
+        std::vector<std::vector<int>> ConvertToPBM();
 };
 
 #endif

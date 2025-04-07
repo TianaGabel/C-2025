@@ -8,7 +8,10 @@
 
 class ImageManager {
     private:
-        AbstractImage image;
+        PPMImage ppmimage;
+        PGMImage pgmimage;
+        PBMImage pbmimage;
+        AbstractImage* image;
     public:
         int ReadImage(char* file_name);
         int OutputImage(char* out_file_name);
